@@ -1,12 +1,16 @@
 import { useForm } from "react-hook-form";
+
 import { yupResolver } from "@hookform/resolvers/yup";
 import AuthInput from "./AuthInput";
 import { userSignUpSchema } from "../../utils/validations";
 import { useDispatch, useSelector } from "react-redux";
 import { PulseLoader } from "react-spinners";
 import { Link, useNavigate } from "react-router-dom";
-import { registerUser } from "../../features/userSlice";
+import { changeStatus, registerUser } from "../../features/userSlice";
 import { useState } from "react";
+import Picture from "../Picture";
+import axios from "axios";
+
 const RegisterForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -22,30 +26,56 @@ const RegisterForm = () => {
 
   // useSelector
   const [localError, setLocalError] = useState("");
+  const [picture, setPicture] = useState("");
+  const [readablePicture, setReadablePicture] = useState("");
   let { status, error } = useSelector((state) => state.user);
 
-  console.log({ status, error });
+  const uploadImage = async () => {
+    let formData = new FormData();
+    formData.append("upload_preset", "l2vrirdh");
+    formData.append("file", picture);
+    const { data } = await axios.post(
+      `https://api.cloudinary.com/v1_1/dukehbdsz/image/upload`,
+      formData
+    );
+    console.log({ data });
+    return data;
+  };
   const onSubmit = async (data) => {
-    const res = await dispatch(registerUser({ ...data, picture: "" }));
-    console.log(res.payload, "---");
-    if (res.payload.user) {
-      navigate("/");
-    } else if (res.payload) {
-      setLocalError(res.payload); // Set localError if there's an error from the API
+    dispatch(changeStatus("loading"));
+    let res;
+    if (picture) {
+      uploadImage().then(async (ss) => {
+        res = await dispatch(registerUser({ ...data, picture: ss.secure_url }));
+        if (res?.payload?.user) {
+          navigate("/");
+        } else if (res?.payload) {
+          setLocalError(res.payload); // Set localError if there's an error from the API
+        }
+      });
+    } else {
+      res = await dispatch(registerUser({ ...data, picture: "" }));
+      if (res?.payload?.user) {
+        navigate("/");
+      } else if (res?.payload) {
+        setLocalError(res.payload); // Set localError if there's an error from the API
+      }
     }
   };
+
   const onFieldChange = () => {
     setLocalError("");
   };
   return (
     <div className="h-screen w-full  flex items-center justify-center overflow-hidden">
       {/**Container */}
-      <div className="max-w-md space-y-8 p-10 dark:bg-dark_bg_2 rounded-xl">
+      <div className="w-full max-w-md space-y-8 p-10 dark:bg-dark_bg_2 rounded-xl">
         {/*Headig*/}
         <div className="text-center dark:text-dark_text_1">
           <h2 className="mt-6 text-3xl font-bold">Welcome</h2>
           <p className="mt-2 text-sm">Sign Up</p>
         </div>
+
         {/*Form*/}
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -69,7 +99,7 @@ const RegisterForm = () => {
           <AuthInput
             name="status"
             type="text"
-            placeholder="Status"
+            placeholder="Status (Optional)"
             register={register}
             error={errors?.status?.message}
           />
@@ -79,6 +109,11 @@ const RegisterForm = () => {
             placeholder="Password"
             register={register}
             error={errors?.password?.message}
+          />
+          <Picture
+            readablePicture={readablePicture}
+            setPicture={setPicture}
+            setReadablePicture={setReadablePicture}
           />
           {/* if we have an error */}
           {localError ? (

@@ -1,5 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+const x = process.env.REACT_APP_CLOUD_NAME;
+const y = process.env.REACT_APP_CLOUD_SECRET;
+console.log({ x, y });
 const AUTH_ENDPOINT = `${process.env.REACT_APP_API_ENDPOINT}/auth`;
 const emptyUserData = {
   _id: "",
@@ -45,6 +48,9 @@ export const userSlice = createSlice({
         status: "",
       };
     },
+    changeStatus: (state, action) => {
+      state.status = action.payload;
+    },
   },
   extraReducers(builder) {
     builder
@@ -64,6 +70,6 @@ export const userSlice = createSlice({
   },
 });
 
-export const { logout } = userSlice.actions;
+export const { logout, changeStatus } = userSlice.actions;
 
 export default userSlice.reducer;
