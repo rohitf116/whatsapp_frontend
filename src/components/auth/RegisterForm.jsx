@@ -17,8 +17,7 @@ const RegisterForm = () => {
   const {
     register,
     handleSubmit,
-    watch,
-    reset,
+
     formState: { errors },
   } = useForm({
     resolver: yupResolver(userSignUpSchema),
@@ -28,7 +27,7 @@ const RegisterForm = () => {
   const [localError, setLocalError] = useState("");
   const [picture, setPicture] = useState("");
   const [readablePicture, setReadablePicture] = useState("");
-  let { status, error } = useSelector((state) => state.user);
+  let { status } = useSelector((state) => state.user);
 
   const uploadImage = async () => {
     let formData = new FormData();

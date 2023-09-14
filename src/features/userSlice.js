@@ -4,14 +4,7 @@ const x = process.env.REACT_APP_CLOUD_NAME;
 const y = process.env.REACT_APP_CLOUD_SECRET;
 console.log({ x, y });
 const AUTH_ENDPOINT = `${process.env.REACT_APP_API_ENDPOINT}/auth`;
-const emptyUserData = {
-  _id: "",
-  name: "",
-  email: "",
-  picture: "",
-  status: "",
-  token: "",
-};
+
 const initialState = {
   status: "",
   error: "",

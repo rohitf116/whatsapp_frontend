@@ -7,7 +7,7 @@ import {
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 function App() {
   const { user } = useSelector((state) => state.user);

@@ -6,21 +6,20 @@ import AuthInput from "./AuthInput";
 import { useState } from "react";
 import { userSignInSchema } from "../../utils/validations";
 import { useDispatch, useSelector } from "react-redux";
-import { changeStatus, loginUser } from "../../features/userSlice";
+import { loginUser } from "../../features/userSlice";
 import { Link, useNavigate } from "react-router-dom";
 const LoginForm = () => {
   const {
     register,
     handleSubmit,
-    watch,
-    reset,
+
     formState: { errors },
   } = useForm({
     resolver: yupResolver(userSignInSchema),
   });
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  let { status, error } = useSelector((state) => state.user);
+  let { status } = useSelector((state) => state.user);
   const [localError, setLocalError] = useState("");
   const onFieldChange = () => {
     setLocalError("");
