@@ -18,3 +18,13 @@ export const userSignUpSchema = Yup.object({
     .min(6, "Password must have 6 length")
     .max(16, "Password cannot  have 16 more than length"),
 });
+
+export const userSignInSchema = Yup.object({
+  email: Yup.string()
+    .required("Email is required")
+    .email("Must be a valid email"),
+  password: Yup.string()
+    .required("Password is required")
+    .min(6, "Password must have 6 length")
+    .max(16, "Password cannot  have 16 more than length"),
+});
